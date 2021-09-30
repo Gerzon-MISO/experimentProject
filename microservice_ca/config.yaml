@@ -1,0 +1,23 @@
+# # # # # # # # # # # # # # # # # # # # # # # # #
+# This file is used to specify configurations   #
+# for creating Certificates.                    #
+# Always specify full path wherever applicable. #
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
+# CSR Configuration
+
+CSR:
+   commonName: "MISO"
+   stateOrProvinceName: "Bogotá DC."
+   localityName: "Bogotá"
+   organizationName: "Uniandes - MISO"
+   organizationalUnitName: "Certification Authority"
+   emailAddress: "g.bautistag@uniandes.edu.co"
+   countryName: "CO"
+
+# CERT Configuration
+
+CERT:
+    KeyType: RSA
+    BitLength: 2048
+    digestType: 'sha256'
