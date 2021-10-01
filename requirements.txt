@@ -2,3 +2,4 @@ Flask==2.0.1
 pyOpenSSL==21.0.0
 PyYAML~=5.4.1
 six~=1.16.0
+requests~=2.26.0
