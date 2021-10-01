@@ -1,10 +1,14 @@
-from flask import Flask
+from flask import Flask,request
+from flask_restful import Resource,Api
+import enum
 import ssl
+import random
 import requests
+from faker import Faker
 
 
 app = Flask(__name__)
-
+api=Api(app)
 
 def write_file(name_file, content_file):
     text_file = open("./certificates/%s" % name_file, "w")
@@ -27,9 +31,20 @@ ssl_context.load_cert_chain(certfile='./certificates/ca.crt', keyfile='./certifi
 ssl_context.verify_mode = ssl.CERT_REQUIRED
 
 
-@app.route("/")
-def greeting():
-    return "hello, I'm Microservice One"
+class Paciente(Resource):
+    def get(self):
+        fake = Faker()
+        id = fake.random_int(1, 9999)
+        nombre = fake.unique.name()
+        fechaNacimiento = str(fake.date())
+        direccion = fake.address()
+        Epss = ["Sanitas", "Sura", "Coomeva", "Famisanar", "Compensar", "Cafam", "Cafesalud"]
+        Eps = random.choice(list(Epss))
+
+        return {"id": id, "identificacion": request.json['identificacion'], "nombre": nombre,
+                "fechaNacimiento": fechaNacimiento, "direccion": direccion, "Eps": Eps}
+
+api.add_resource(Paciente, '/paciente')
 
 
 if __name__ == '__main__':
