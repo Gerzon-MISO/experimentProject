@@ -6,8 +6,11 @@ import json
 from faker import Faker
 from random import randrange
 import random
-import ssl
-
+import ssl, http.client
+import sys
+import json
+from os import path
+sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 
 app = Flask(__name__)
 api=Api(app)
@@ -33,15 +36,25 @@ ssl_context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH, cafile
 ssl_context.load_cert_chain(certfile='./certificates/ca.crt', keyfile='./certificates/ca.key', password=None)
 ssl_context.verify_mode = ssl.CERT_REQUIRED
 
+
 class Facturacion(Resource):
     def get(self):
 
         payload = {'identificacion': request.json['identificacion']}
-        content = requests.get('http://127.0.0.1:1338/paciente', json=payload)
+        json_data = json.dumps(payload)
+        headers = {'Content-type': 'application/json'}
+        context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        context.load_cert_chain(certfile='./certificates/ca.pem')
+        connection = http.client.HTTPSConnection('127.0.0.1', port=1338, context=context)
+        connection.request('GET', '/paciente', json_data, headers)
+        content = connection.getresponse().read()
+        print(100)
+
+        #content = requests.get('http://127.0.0.1:1338/paciente', json=payload)
 
         servicios=["cirugia", "examenes", "imagenes", "inyectologia", "medicina interna", "neurologia","traumatologia","hematologia","infectologia"]
 
-        paciente = content.json()
+        paciente = json.loads(content.decode())
         idFactura = fake.uuid4()
         nombrePaciente = paciente['nombre']
         direccion = paciente['direccion']
