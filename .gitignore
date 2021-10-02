@@ -143,3 +143,10 @@ cython_debug/
 
 #DataBase
 test.db
+
+# Certificates
+microservice_facturacion/certificates
+microservice_paciente/certificates
+microservice_servicios/certificates
+
+.idea/
