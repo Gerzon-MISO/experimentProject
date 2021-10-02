@@ -47,8 +47,12 @@ class Facturacion(Resource):
         context.load_cert_chain(certfile='./certificates/ca.pem')
         connection = http.client.HTTPSConnection('127.0.0.1', port=1338, context=context)
         connection.request('GET', '/paciente', json_data, headers)
-        content = connection.getresponse().read()
-        print(100)
+        try:
+            respuesta = connection.getresponse()
+        except Exception:
+            return 'Certificado no valido'
+        content = respuesta.read()
+        print(content)
 
         #content = requests.get('http://127.0.0.1:1338/paciente', json=payload)
 
@@ -71,4 +75,8 @@ class Facturacion(Resource):
 api.add_resource(Facturacion, '/facturacion')
 
 if __name__ == '__main__':
-    app.run(port=6000, debug=True, ssl_context=ssl_context)
+    try: 
+        app.run(port=6000, debug=True, ssl_context=ssl_context)
+
+    except Exception:
+        print ("Certificado no valido")
